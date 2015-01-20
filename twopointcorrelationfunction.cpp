@@ -51,7 +51,11 @@ vector<vector<pair<float, float> > > TwoPointCorrelationFunction::calculate(stri
 
         state0.clearCells();
         state0.addParticles(x,y,z);
-        vec3 numberOfCells0 = state0.numberOfCells();
+        int numberOfCells[3];
+        numberOfCells[0] = state0.numberOfCells()[0];
+        numberOfCells[1] = state0.numberOfCells()[1];
+        numberOfCells[2] = state0.numberOfCells()[2];
+
         vector<vector<vector<Cell> > > &cells0 = state0.cells();
 
         for(unsigned int t1=t0; t1<numberOfTimesteps; t1++) {
@@ -61,7 +65,6 @@ vector<vector<pair<float, float> > > TwoPointCorrelationFunction::calculate(stri
             state1.clearCells();
             state1.addParticles(x,y,z);
             numberOfParticles = x.size();
-            vec3 numberOfCells1 = state1.numberOfCells();
             vector<vector<vector<Cell> > > &cells1 = state1.cells();
             unsigned int deltaT = t1 - t0;
             for(unsigned int k=0; k<kValues.size(); k++){
@@ -69,13 +72,17 @@ vector<vector<pair<float, float> > > TwoPointCorrelationFunction::calculate(stri
             }
 
             CPElapsedTimer::twoPointCorrelation().start();
-            for(unsigned int c1x=0; c1x<numberOfCells0[0]; c1x++) {
-                for(unsigned int c1y=0; c1y<numberOfCells0[1]; c1y++) {
-                    for(unsigned int c1z=0; c1z<numberOfCells0[2]; c1z++) {
+            for(int c1x=0; c1x<numberOfCells[0]; c1x++) {
+                for(int c1y=0; c1y<numberOfCells[1]; c1y++) {
+                    for(int c1z=0; c1z<numberOfCells[2]; c1z++) {
                         Cell &cell0 = cells0[c1x][c1y][c1z];
-                        for(unsigned int c2x=0; c2x<numberOfCells1[0]; c2x++) {
-                            for(unsigned int c2y=0; c2y<numberOfCells1[1]; c2y++) {
-                                for(unsigned int c2z=0; c2z<numberOfCells1[2]; c2z++) {
+
+                        for(int dx=-1; dx<=1; dx++) {
+                            for(int dy=-1; dy<=1; dy++) {
+                                for(int dz=-1; dz<=1; dz++) {
+                                    int c2x = (c1x + dx + numberOfCells[0]) % numberOfCells[0];
+                                    int c2y = (c1y + dy + numberOfCells[1]) % numberOfCells[1];
+                                    int c2z = (c1z + dz + numberOfCells[2]) % numberOfCells[2];
                                     Cell &cell1 = cells1[c2x][c2y][c2z];
 
                                     for(unsigned int i=0; i<cell0.numberOfParticles(); i++) {

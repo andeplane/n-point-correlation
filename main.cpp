@@ -12,31 +12,21 @@ using namespace std;
 
 int main()
 {
-//    FileManager fileManager;
-//    vector<float> x;
-//    vector<float> y;
-//    vector<float> z;
-//    vec3 systemSize;
-//    fileManager.loadBinaryPositions("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/0000.bin", x, y, z, systemSize);
-//    CellList state;
-//    state.initialize(systemSize, vec3(10, 10, 10));
-//    state.addParticles(x,y,z);
-
-//    cout << "Loaded " << x.size() << " atoms from a system of size " << systemSize << endl;
-
     TwoPointCorrelationFunction twoPoint;
     vector<float> kValues;
     unsigned int numberOfTimesteps = 1;
-    float cellSize = 1.0;
-    // kValues.push_back(1.0);
+    float cellSize = 10;
+
     for(unsigned int i=0; i<200; i++) {
         kValues.push_back(0.05*i);
     }
 
     vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, cellSize);
-//    for(unsigned int i=0; i<result[0].size(); i++) {
+
+    //    for(unsigned int i=0; i<result[0].size(); i++) {
 //        cout << i << " " << result[0][i].first << " " << result[0][i].second << endl;
 //    }
+
     for(unsigned int k=0; k<result.size(); k++) {
         cout << kValues[k] << " " << result[k][0].first << " " << result[k][0].second << endl;
     }
