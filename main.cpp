@@ -19,7 +19,7 @@ int main()
 //        kValues.push_back(0.05*i);
 //    }
 
-    unsigned int numberOfTimesteps = 100;
+    unsigned int numberOfTimesteps = 50;
     float cellSize = 14;
     kValues.push_back(7.2);
 
@@ -47,7 +47,7 @@ int main()
          << "      Two point norm    : " << CPElapsedTimer::twoPointCorrelationNormalize().elapsedTime() << " s ( " << 100*twoPointCorrelationNormalizeFraction << "%)" <<  endl << endl;
 
     cout << twoPoint.numberOfComputedPairs() << " computed pairs (" << twoPoint.numberOfComputedPairs()/CPElapsedTimer::totalTime() << " per second)" << endl;
-    float flops = (6*twoPoint.numberOfComputedPairs() + twoPoint.numberOfComputedPairs()*kValues.size()*(7+30)) / CPElapsedTimer::totalTime();
+    float flops = (6*twoPoint.numberOfComputedPairs() + twoPoint.numberOfComputedPairs()*kValues.size()*(7+42)) / CPElapsedTimer::totalTime();
     cout << "which gives " << flops/1e9 << " gigaflops." << endl;
 
     return 0;
