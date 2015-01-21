@@ -15,24 +15,29 @@ int main()
     TwoPointCorrelationFunction twoPoint;
     vector<float> kValues;
 
-//    for(unsigned int i=0; i<1000; i++) {
-//        kValues.push_back(0.05*i);
-//    }
-
-    unsigned int numberOfTimesteps = 50;
-    float cellSize = 14;
+#ifdef SINGLEK
     kValues.push_back(7.2);
+    unsigned int numberOfTimesteps = 199;
+#else
+    for(unsigned int i=0; i<50; i++) {
+        kValues.push_back(0.4*i + 1.0);
+    }
+    unsigned int numberOfTimesteps = 8;
+#endif
 
-    vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, cellSize);
-    // vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, cellSize);
-
+    float cellSize = 15;
+#ifdef SINGLEK
+    // vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, 0, kValues, cellSize);
     for(unsigned int i=0; i<result[0].size(); i++) {
         cout << i << " " << result[0][i].first << " " << result[0][i].second << endl;
     }
-
-//    for(unsigned int k=0; k<result.size(); k++) {
-//        cout << kValues[k] << " " << result[k][0].first << " " << result[k][0].second << endl;
-//    }
+#else
+    // vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, 0, kValues, cellSize);
+    vector<float> result = twoPoint.calculateStaticStructureFactor("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, cellSize);
+    for(unsigned int k=0; k<result.size(); k++) {
+        cout << kValues[k] << " " << result[k] << endl;
+    }
+#endif
 
     float readFileFraction = CPElapsedTimer::readFile().elapsedTime() / CPElapsedTimer::totalTime();
     float cellListFraction = CPElapsedTimer::cellList().elapsedTime() / CPElapsedTimer::totalTime();

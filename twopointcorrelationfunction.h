@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+// #define SINGLEK
 
 using std::pair;
 using std::vector;
@@ -14,6 +15,7 @@ private:
 public:
     TwoPointCorrelationFunction();
     ~TwoPointCorrelationFunction();
-    vector<vector<pair<float, float> > > calculate(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, float cellSize);
+    vector<vector<float> > calculate(string baseFolder, unsigned int numberOfTimesteps, unsigned int maxDeltaT, vector<float> kValues, float cellSize);
+    vector<float> calculateStaticStructureFactor(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, float cellSize);
     unsigned long numberOfComputedPairs() { return m_numberOfComputedPairs; }
 };
