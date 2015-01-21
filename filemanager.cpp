@@ -40,6 +40,7 @@ void FileManager::loadBinaryPositions(string filename, vector<float> &x, vector<
     }
 
     delete phaseSpace;
+    file.close();
     CPElapsedTimer::readFile().stop();
 }
 

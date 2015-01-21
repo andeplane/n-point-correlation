@@ -3,6 +3,9 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++11
+QMAKE_CXXFLAGS += -xCORE-AVX-I -O3 -ipo -falign-functions=16
+QMAKE_CFLAGS += -xCORE-AVX-I -O3 -ipo -falign-functions=16
+
 SOURCES += main.cpp \
     celllist.cpp \
     vec3.cpp \
