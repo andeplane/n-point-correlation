@@ -16,6 +16,6 @@ public:
     TwoPointCorrelationFunction();
     ~TwoPointCorrelationFunction();
     vector<vector<float> > calculate(string baseFolder, unsigned int numberOfTimesteps, unsigned int maxDeltaT, vector<float> kValues, float cellSize);
-    vector<float> calculateStaticStructureFactor(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, float cellSize);
+    vector<float> calculateStaticStructureFactor(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, unsigned int numberOfKValues, float cellSize);
     unsigned long numberOfComputedPairs() { return m_numberOfComputedPairs; }
 };

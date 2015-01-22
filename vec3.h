@@ -41,6 +41,7 @@ public:
     float dot(vec3 &rhs);
     float length();
     void normalize();
+    vec3 setLength(float length);
     void setToZero();
     void set(float x, float y, float z);
     inline float x() const { return m_vec[0]; }
@@ -50,6 +51,7 @@ public:
     inline float operator[](int index) const { return m_vec[index]; }
     inline float lengthSquared() { return m_vec[0]*m_vec[0] + m_vec[1]*m_vec[1] + m_vec[2]*m_vec[2]; }
     inline void subtract(const vec3 &v1, const vec3 &v2) { m_vec[0] = v1[0] - v2[0]; m_vec[1] = v1[1] - v2[1]; m_vec[2] = v1[2] - v2[2]; }
+    vec3 randomUniform(float min, float max);
 private:
     friend std::ostream& operator<<(std::ostream&stream, vec3 vec);
 };

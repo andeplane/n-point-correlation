@@ -120,6 +120,8 @@ vector<vector<float> > TwoPointCorrelationFunction::calculate(string baseFolder,
 
                                             if(dz > 0.5*systemSize[2]) dz -= systemSize[2];
                                             else if(dz < -0.5*systemSize[2]) dz += systemSize[2];
+                                            float dr2 = dx*dx + dy*dy + dz*dz;
+
                                             // END - Minimum image convention
 #ifdef SINGLEK
                                             // result[0][deltaT].first += cos(0.33333333333333*(kValues[0]*dx + kValues[0]*dy + kValues[0]*dz));
@@ -163,8 +165,24 @@ vector<vector<float> > TwoPointCorrelationFunction::calculate(string baseFolder,
     return result;
 }
 
-vector<float> TwoPointCorrelationFunction::calculateStaticStructureFactor(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, float cellSize)
+vector<float> TwoPointCorrelationFunction::calculateStaticStructureFactor(string baseFolder, unsigned int numberOfTimesteps, vector<float> kValues, unsigned int numberOfRandomKValues, float cellSize)
 {
+    vector<vector<vec3> > kValuesMoreValues;
+    float oneOverNumberOfRandomKValues = 1.0 / numberOfRandomKValues;
+    kValuesMoreValues.resize(kValues.size());
+    for(unsigned int k=0; k<kValues.size(); k++) {
+        kValuesMoreValues.reserve(numberOfRandomKValues);
+        cout << "k vectors with length " << kValues[k] << ": " << endl;
+        for(unsigned int i=0; i<numberOfRandomKValues; i++) {
+            vec3 randomK;
+            randomK.setLength(kValues[k]);
+            kValuesMoreValues[k].push_back(randomK);
+            cout << randomK << endl;
+        }
+
+        cout << endl;
+    }
+
     vector<float> result;
     result.resize(kValues.size());
     FileManager fileManager;
@@ -193,6 +211,7 @@ vector<float> TwoPointCorrelationFunction::calculateStaticStructureFactor(string
         numberOfCells[0] = state0.numberOfCells()[0];
         numberOfCells[1] = state0.numberOfCells()[1];
         numberOfCells[2] = state0.numberOfCells()[2];
+        float cellSizeSquared = state0.cellSize()[0]*state0.cellSize()[0];
 
         vector<vector<vector<Cell> > > &cells = state0.cells();
 
@@ -238,13 +257,25 @@ vector<float> TwoPointCorrelationFunction::calculateStaticStructureFactor(string
 
                                         if(dz > 0.5*systemSize[2]) dz -= systemSize[2];
                                         else if(dz < -0.5*systemSize[2]) dz += systemSize[2];
+                                        float dr2 = dx*dx + dy*dy + dz*dz;
+                                        if(dr2>cellSizeSquared) continue;
+
                                         // END - Minimum image convention
                                         const unsigned int numberOfKValues = kValues.size();
 #pragma simd
                                         for(unsigned int k=0; k<numberOfKValues; k++) {
-                                            // Use 3 k values along the 3 standard axes to average
-                                            float contribution = 0.33333333333333*(kValues[k]*dx + kValues[k]*dy + kValues[k]*dz);
-                                            result[k] += cos(contribution);//*(cell0.particleIndex[i]!=cell1.particleIndex[j]);
+                                            // float contribution = 0;
+                                            //                                            for(unsigned int l=0; l<numberOfRandomKValues; l++) {
+                                            //                                                contribution += cos(kValuesMoreValues[k][l][0]*dx + kValuesMoreValues[k][l][1]*dy + kValuesMoreValues[k][l][2]*dz);
+                                            //                                                // contribution += kValuesMoreValues[k][l][0]*dx + kValuesMoreValues[k][l][1]*dy + kValuesMoreValues[k][l][2]*dz;
+
+                                            //                                                // Use 3 k values along the 3 standard axes to average
+                                            //                                            }
+
+                                            result[k] += 0.33333333333333*(cos(kValues[k]*dx) + cos(kValues[k]*dy) + cos(kValues[k]*dz));
+
+                                            // result[k] += cos(oneOverNumberOfRandomKValues*contribution);
+                                            // result[k] += oneOverNumberOfRandomKValues*contribution;
                                         }
                                     }
                                 }

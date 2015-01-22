@@ -1,5 +1,6 @@
 #include <cmath>
 #include "vec3.h"
+#include "random.h"
 
 vec3::vec3()
 {
@@ -140,6 +141,13 @@ float vec3::length() {
     return sqrt(lengthSquared());
 }
 
+vec3 vec3::randomUniform(float min, float max) {
+    m_vec[0] = min + Random::nextDouble()*(max - min);
+    m_vec[1] = min + Random::nextDouble()*(max - min);
+    m_vec[2] = min + Random::nextDouble()*(max - min);
+    return *this;
+}
+
 void vec3::normalize() {
     float myLength = length();
     if(myLength > 0) { // Don't divide by zero...
@@ -147,6 +155,17 @@ void vec3::normalize() {
         m_vec[1] /= myLength;
         m_vec[2] /= myLength;
     }
+}
+
+vec3 vec3::setLength(float length)
+{
+    randomUniform(0,1);
+    normalize();
+    float sqrtLength = sqrt(length);
+    m_vec[0] *= sqrtLength;
+    m_vec[1] *= sqrtLength;
+    m_vec[2] *= sqrtLength;
+    return *this;
 }
 
 void vec3::setToZero()

@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     vec3.cpp \
     filemanager.cpp \
     twopointcorrelationfunction.cpp \
-    cpelapsedtimer.cpp
+    cpelapsedtimer.cpp \
+    random.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -22,5 +23,6 @@ HEADERS += \
     vec3.h \
     filemanager.h \
     twopointcorrelationfunction.h \
-    cpelapsedtimer.h
+    cpelapsedtimer.h \
+    random.h
 

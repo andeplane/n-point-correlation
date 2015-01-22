@@ -7,6 +7,11 @@
 #include "twopointcorrelationfunction.h"
 #include <string>
 #include <utility>
+#include "random.h"
+#include <cmath>
+
+unsigned int numberOfRandomKValues = 4;
+
 
 using namespace std;
 
@@ -19,13 +24,17 @@ int main()
     kValues.push_back(7.2);
     unsigned int numberOfTimesteps = 199;
 #else
-    for(unsigned int i=0; i<50; i++) {
-        kValues.push_back(0.4*i + 1.0);
+    vec3 systemSize(105.2, 105.2, 105.2);
+
+    for(unsigned int i=20; i<300; i++) {
+        float kValue = i*2.0*M_PI/systemSize[0];
+        kValues.push_back(kValue);
     }
-    unsigned int numberOfTimesteps = 8;
+    // kValues.push_back(4.0);
+    unsigned int numberOfTimesteps = 1;
 #endif
 
-    float cellSize = 15;
+    float cellSize = 25;
 #ifdef SINGLEK
     // vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, 0, kValues, cellSize);
     for(unsigned int i=0; i<result[0].size(); i++) {
@@ -33,7 +42,8 @@ int main()
     }
 #else
     // vector<vector<pair<float, float> > > result = twoPoint.calculate("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, 0, kValues, cellSize);
-    vector<float> result = twoPoint.calculateStaticStructureFactor("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, cellSize);
+    cout << "Rand: " << Random::nextDouble() << endl;
+    vector<float> result = twoPoint.calculateStaticStructureFactor("/projects/build-molecular-dynamics-fys3150-GCC4_9-Release/states/", numberOfTimesteps, kValues, numberOfRandomKValues, cellSize);
     for(unsigned int k=0; k<result.size(); k++) {
         cout << kValues[k] << " " << result[k] << endl;
     }
@@ -52,7 +62,7 @@ int main()
          << "      Two point norm    : " << CPElapsedTimer::twoPointCorrelationNormalize().elapsedTime() << " s ( " << 100*twoPointCorrelationNormalizeFraction << "%)" <<  endl << endl;
 
     cout << twoPoint.numberOfComputedPairs() << " computed pairs (" << twoPoint.numberOfComputedPairs()/CPElapsedTimer::totalTime() << " per second)" << endl;
-    float flops = (6*twoPoint.numberOfComputedPairs() + twoPoint.numberOfComputedPairs()*kValues.size()*(7+42)) / CPElapsedTimer::totalTime();
+    float flops = (6*twoPoint.numberOfComputedPairs() + twoPoint.numberOfComputedPairs()*kValues.size()*numberOfRandomKValues*(5+42)) / CPElapsedTimer::totalTime();
     cout << "which gives " << flops/1e9 << " gigaflops." << endl;
 
     return 0;
